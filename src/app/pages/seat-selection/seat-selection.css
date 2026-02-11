@@ -1,0 +1,138 @@
+/* ── Seat Grid Layout ── */
+.seat-grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.steering-row {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #d1d5db;
+}
+
+.steering-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seat-row {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.seat-row-gap {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #d1d5db;
+}
+
+/* ── Individual Seat ── */
+.seat {
+    width: 52px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+    font-family: inherit;
+}
+
+.seat-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ── Seat States ── */
+.seat-available {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #6b7280;
+}
+
+.seat-available:hover {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #16a34a;
+    transform: scale(1.08);
+}
+
+.seat-selected {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #16a34a;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+}
+
+.seat-selected:hover {
+    background: #bbf7d0;
+    transform: scale(1.05);
+}
+
+.seat-booked {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #f87171;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ── Legend boxes ── */
+.seat-box {
+    width: 32px;
+    height: 24px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+}
+
+.seat-box.seat-available {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.seat-box.seat-selected {
+    background: #dcfce7;
+    border-color: #22c55e;
+    box-shadow: none;
+}
+
+.seat-box.seat-booked {
+    background: #fef2f2;
+    border-color: #fecaca;
+    opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    .seat {
+        width: 42px;
+        height: 34px;
+    }
+
+    .seat-label {
+        font-size: 8px;
+    }
+
+    .seat-row {
+        gap: 6px;
+    }
+}

@@ -1,0 +1,72 @@
+<div class="min-h-screen bg-mesh pt-20 animate-fade-in">
+    <div class="fixed bottom-20 left-10 w-72 h-72 bg-green-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <!-- Header -->
+        <div class="mb-8 sm:mb-10">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Available Buses</h2>
+            <p class="text-gray-500">Select a bus that suits your schedule</p>
+        </div>
+
+        <!-- Bus Cards -->
+        <div class="space-y-4">
+            @if (loading) {
+            <div class="flex items-center justify-center py-16">
+                <svg class="animate-spin h-10 w-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+            </div>
+            } @else {
+            @for (bus of buses; track bus.id) {
+            <div
+                class="glass-card p-4 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 hover:border-green-300 transition-all duration-300 group">
+                <div class="flex-1">
+                    <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
+                        <span
+                            [class]="'px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1 ' + bus.typeBg + ' ' + bus.typeColor">
+                            <mat-icon class="!text-sm">{{bus.typeIcon}}</mat-icon> {{bus.typeLabel}}
+                        </span>
+                        <span
+                            class="px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-xs font-medium flex items-center gap-1">
+                            <mat-icon class="!text-sm">star</mat-icon> {{bus.rating}}
+                        </span>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+                        {{bus.name}}</h3>
+                    <p class="text-gray-400 text-sm mt-1">{{bus.vehicle}}</p>
+                </div>
+
+                <div class="flex items-center gap-6 sm:gap-8 md:gap-12">
+                    <div class="text-center">
+                        <p class="text-base sm:text-lg font-bold text-gray-900">{{bus.departure}}</p>
+                        <p class="text-gray-400 text-xs mt-1">{{bus.departureCity}}</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <p class="text-gray-400 text-xs mb-1 flex items-center gap-1"><mat-icon
+                                class="!text-sm">schedule</mat-icon> {{bus.duration}}</p>
+                        <div class="w-16 sm:w-20 h-px bg-gradient-to-r from-green-500 to-emerald-500"></div>
+                        <p class="text-gray-300 text-xs mt-1">{{bus.stops}}</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-base sm:text-lg font-bold text-gray-900">{{bus.arrival}}</p>
+                        <p class="text-gray-400 text-xs mt-1">{{bus.arrivalCity}}</p>
+                    </div>
+                </div>
+
+                <div class="text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start gap-3">
+                    <div>
+                        <p class="text-xl sm:text-2xl font-bold text-gradient">₹{{bus.price}}</p>
+                        <p class="text-gray-400 text-xs">per seat</p>
+                    </div>
+                    <button (click)="selectBus(bus)" class="btn-primary !px-6 !py-2.5 text-sm">Book Now</button>
+                </div>
+            </div>
+            }
+            }
+        </div>
+    </div>
+</div>

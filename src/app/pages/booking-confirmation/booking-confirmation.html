@@ -1,0 +1,193 @@
+<div class="min-h-screen bg-mesh pt-20 animate-fade-in">
+    <div class="fixed top-40 left-20 w-80 h-80 bg-green-500/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed bottom-20 right-20 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        @if (bus) {
+        <!-- Success Header -->
+        <div class="text-center mb-8 sm:mb-10 animate-slide-up">
+            <div class="success-icon-container mx-auto mb-6">
+                <div class="success-icon-ring"></div>
+                <div class="success-icon">
+                    <mat-icon class="!text-4xl text-green-600">check_circle</mat-icon>
+                </div>
+            </div>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">Booking Confirmed!</h2>
+            <p class="text-gray-500 text-base sm:text-lg">Your ride has been successfully booked</p>
+        </div>
+
+        <!-- Ticket Card -->
+        <div class="glass-card overflow-hidden glow-green">
+            <!-- Ticket Header -->
+            <div class="ticket-header px-4 sm:px-8 py-5 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <mat-icon class="text-white !text-2xl">directions_bus</mat-icon>
+                    <span class="text-white font-bold text-base sm:text-lg">{{bus.name}}</span>
+                </div>
+                <span
+                    class="px-3 py-1 bg-white/20 text-white rounded-full text-xs font-semibold uppercase tracking-wider">
+                    {{bus.typeLabel}}
+                </span>
+            </div>
+
+            <!-- Booking ID Row -->
+            <div
+                class="px-4 sm:px-8 py-4 bg-gray-50 flex flex-wrap justify-between items-center gap-4 border-b border-gray-100">
+                <div>
+                    <p class="text-gray-400 text-xs uppercase tracking-wider">Booking ID</p>
+                    <p class="text-green-600 font-mono font-bold text-base sm:text-lg mt-0.5">{{bookingId}}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-gray-400 text-xs uppercase tracking-wider">PNR Number</p>
+                    <p class="text-gray-900 font-mono font-bold text-base sm:text-lg mt-0.5">{{pnr}}</p>
+                </div>
+            </div>
+
+            <!-- Passenger Details -->
+            <div class="px-4 sm:px-8 py-5 border-b border-gray-100">
+                <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Passenger Details</h4>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
+                            <mat-icon class="text-green-600 !text-xl">person</mat-icon>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs">Passenger Name</p>
+                            <p class="text-gray-900 font-semibold">{{user?.name || 'Guest'}}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
+                            <mat-icon class="text-green-600 !text-xl">email</mat-icon>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs">Email</p>
+                            <p class="text-gray-900 font-semibold">{{user?.email || '—'}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashed Separator (ticket tear line) -->
+            <div class="ticket-tear">
+                <div class="tear-circle tear-left"></div>
+                <div class="tear-line"></div>
+                <div class="tear-circle tear-right"></div>
+            </div>
+
+            <!-- Journey Details -->
+            <div class="px-4 sm:px-8 py-5 border-b border-gray-100">
+                <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Journey Details</h4>
+                <div class="flex items-center justify-between gap-4 mb-6">
+                    <div class="text-center">
+                        <p class="text-xl sm:text-2xl font-bold text-gray-900">{{bus.departure}}</p>
+                        <p class="text-gray-400 text-sm mt-1">{{bus.departureCity}}</p>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center px-2 sm:px-4">
+                        <p class="text-gray-400 text-xs mb-2">{{bus.duration}}</p>
+                        <div class="route-line w-full">
+                            <div class="route-dot route-dot-start"></div>
+                            <div class="route-bar"></div>
+                            <div class="route-dot route-dot-end"></div>
+                        </div>
+                        <p class="text-gray-300 text-xs mt-2">{{bus.stops}}</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xl sm:text-2xl font-bold text-gray-900">{{bus.arrival}}</p>
+                        <p class="text-gray-400 text-sm mt-1">{{bus.arrivalCity}}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div>
+                        <p class="text-gray-400 text-xs">Booking Date</p>
+                        <p class="text-gray-800 text-sm font-medium mt-1">{{bookingDate}}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs">Bus Type</p>
+                        <p class="text-gray-800 text-sm font-medium mt-1">{{bus.vehicle}}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs">Stops</p>
+                        <p class="text-gray-800 text-sm font-medium mt-1">{{bus.stops}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seat & Payment Details -->
+            <div class="px-4 sm:px-8 py-5">
+                <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Seat & Payment</h4>
+                <div class="grid sm:grid-cols-2 gap-4 mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
+                            <mat-icon class="text-green-600 !text-xl">event_seat</mat-icon>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs">Seat Numbers</p>
+                            <p class="text-green-600 font-semibold">
+                                @for (seat of seats; track seat; let last = $last) {
+                                {{seat}}{{last ? '' : ', '}}
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
+                            <mat-icon class="text-green-600 !text-xl">groups</mat-icon>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs">Passengers</p>
+                            <p class="text-gray-900 font-semibold">{{passengerCount}} {{passengerCount === 1 ? 'Passenger'
+                                : 'Passengers'}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="total-row flex justify-between items-center p-4 rounded-xl">
+                    <div class="flex items-center gap-2">
+                        <mat-icon class="text-green-600">payments</mat-icon>
+                        <span class="text-gray-800 font-semibold">Total Amount Paid</span>
+                    </div>
+                    <span class="text-gradient text-xl sm:text-2xl font-bold">₹{{totalPrice}}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+            <button (click)="downloadTicket()"
+                class="btn-primary px-8 py-3 text-sm flex items-center justify-center gap-2 cursor-pointer">
+                <mat-icon class="!text-xl">download</mat-icon>
+                Download Ticket (PDF)
+            </button>
+            <a routerLink="/my-bookings" class="btn-secondary px-8 py-3 text-sm flex items-center justify-center gap-2">
+                <mat-icon class="!text-xl">list_alt</mat-icon>
+                View All Bookings
+            </a>
+            <a routerLink="/booking" class="btn-secondary px-8 py-3 text-sm flex items-center justify-center gap-2">
+                <mat-icon class="!text-xl">confirmation_number</mat-icon>
+                Book Another Ride
+            </a>
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Success Popup -->
+@if (showSuccessPopup) {
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 animate-fade-in">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center">
+        <div class="mx-auto w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-5">
+            <mat-icon class="text-green-600 !text-5xl !w-12 !h-12">check_circle</mat-icon>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">Booking Successful!</h3>
+        <p class="text-gray-500 mb-2">Your bus ticket has been confirmed.</p>
+        <p class="text-sm text-gray-400 mb-1">Booking ID: <span class="font-mono font-bold text-green-600">{{ bookingId }}</span></p>
+        <p class="text-sm text-gray-400 mb-6">PNR: <span class="font-mono font-bold text-gray-800">{{ pnr }}</span></p>
+        <button (click)="closePopup()"
+            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl transition-all cursor-pointer">
+            View My Ticket
+        </button>
+    </div>
+</div>
+}

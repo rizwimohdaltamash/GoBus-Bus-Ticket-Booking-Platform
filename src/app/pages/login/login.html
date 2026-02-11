@@ -1,0 +1,60 @@
+<div class="min-h-screen bg-mesh flex items-center justify-center px-4 pt-16">
+    <!-- Decorative orbs -->
+    <div
+        class="fixed top-20 left-10 w-72 h-72 bg-green-500/5 rounded-full blur-3xl animate-pulse-slow pointer-events-none">
+    </div>
+    <div
+        class="fixed bottom-20 right-10 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl animate-pulse-slow pointer-events-none">
+    </div>
+
+    <div class="glass-card glow-green p-6 sm:p-10 w-full max-w-md animate-fade-in">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <mat-icon class="text-green-600 !text-6xl mb-4">directions_bus</mat-icon>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+            <p class="text-gray-500 text-sm">Sign in to your GoBus account</p>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1.5">Email Address</label>
+                <input #email type="email" placeholder="you@example.com" class="input-field">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1.5">Password</label>
+                <input #password type="password" placeholder="••••••••" class="input-field">
+            </div>
+        </div>
+
+        <!-- Login Button -->
+        @if (errorMsg) {
+        <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm flex items-center gap-2">
+            <mat-icon class="!text-lg">error_outline</mat-icon>
+            {{ errorMsg }}
+        </div>
+        }
+
+        <button (click)="login(email.value, password.value)"
+            [disabled]="loading"
+            [class]="'btn-primary w-full mt-6 py-3.5 text-base ' + (loading ? 'opacity-60 cursor-not-allowed' : '')">
+            {{ loading ? 'Signing In...' : 'Sign In' }}
+        </button>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-4 my-6">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <span class="text-xs text-gray-400 uppercase tracking-wider">or</span>
+            <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <!-- Signup Link -->
+        <p class="text-center text-gray-500 text-sm">
+            New to GoBus?
+            <a routerLink="/signup" class="text-green-600 hover:text-green-700 font-semibold transition-colors ml-1">
+                Create an account
+            </a>
+        </p>
+    </div>
+</div>

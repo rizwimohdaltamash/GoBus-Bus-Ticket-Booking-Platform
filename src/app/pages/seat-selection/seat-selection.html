@@ -1,0 +1,179 @@
+<div class="min-h-screen bg-mesh pt-20 animate-fade-in">
+    <div class="fixed top-40 right-10 w-80 h-80 bg-green-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <!-- Back Button + Header -->
+        <div class="mb-8 sm:mb-10">
+            <button (click)="goBack()"
+                class="flex items-center gap-2 text-gray-400 hover:text-green-600 transition-colors mb-4">
+                <mat-icon>arrow_back</mat-icon>
+                <span class="text-sm font-medium">Back to buses</span>
+            </button>
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Select Your Seats</h2>
+            <p class="text-gray-500">Choose your preferred seats for a comfortable journey</p>
+        </div>
+
+        @if (bus) {
+        <div class="grid lg:grid-cols-3 gap-6 sm:gap-8">
+            <!-- Left Panel: Bus Info + Legend -->
+            <div class="lg:col-span-1 space-y-4 sm:space-y-6">
+                <!-- Bus Summary Card -->
+                <div class="glass-card p-4 sm:p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+                            <mat-icon class="text-green-600 !text-2xl">directions_bus</mat-icon>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">{{bus.name}}</h3>
+                            <p class="text-gray-400 text-sm">{{bus.vehicle}}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 pt-4 border-t border-gray-100">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Route</span>
+                            <span class="text-gray-800 text-sm font-medium">{{bus.departureCity}} →
+                                {{bus.arrivalCity}}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Departure</span>
+                            <span class="text-gray-800 text-sm font-medium">{{bus.departure}}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Arrival</span>
+                            <span class="text-gray-800 text-sm font-medium">{{bus.arrival}}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Duration</span>
+                            <span class="text-gray-800 text-sm font-medium">{{bus.duration}}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Price</span>
+                            <span class="text-gradient text-sm font-bold">₹{{bus.price}} / seat</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="glass-card p-4 sm:p-6">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-4 uppercase tracking-wider">Seat Legend</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="seat-box seat-available"></div>
+                            <span class="text-gray-500 text-sm">Available</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="seat-box seat-selected"></div>
+                            <span class="text-gray-500 text-sm">Selected</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="seat-box seat-booked"></div>
+                            <span class="text-gray-500 text-sm">Booked</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Summary -->
+                @if (selectedSeats.length > 0) {
+                <div class="glass-card p-4 sm:p-6 border-green-300 animate-fade-in">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-4 uppercase tracking-wider">Booking Summary</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Selected Seats</span>
+                            <span class="text-gray-800 text-sm font-medium">{{selectedSeats.length}}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 text-sm">Seats</span>
+                            <span class="text-green-600 text-sm font-medium">
+                                @for (s of selectedSeats; track s.id; let last = $last) {
+                                {{s.label}}{{last ? '' : ', '}}
+                                }
+                            </span>
+                        </div>
+                        <div class="flex justify-between pt-3 border-t border-gray-100">
+                            <span class="text-gray-800 font-semibold">Total</span>
+                            <span class="text-gradient text-xl font-bold">₹{{totalPrice}}</span>
+                        </div>
+                    </div>
+                    @if (paymentError) {
+                    <div class="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm flex items-center gap-2">
+                        <mat-icon class="!text-lg">error</mat-icon>
+                        {{ paymentError }}
+                    </div>
+                    }
+                    <button (click)="confirmBooking()" [disabled]="paymentProcessing"
+                        class="btn-primary w-full mt-6 py-3 text-sm flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                        @if (paymentProcessing) {
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        Processing...
+                        } @else {
+                        <mat-icon class="!text-xl">payment</mat-icon>
+                        Pay ₹{{ totalPrice }} & Book
+                        }
+                    </button>
+                </div>
+                }
+            </div>
+
+            <!-- Right Panel: Seat Map -->
+            <div class="lg:col-span-2 space-y-6 sm:space-y-8">
+                <!-- Lower Deck -->
+                <div class="glass-card p-4 sm:p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <mat-icon class="text-green-600">airline_seat_flat</mat-icon>
+                        <h3 class="text-lg font-semibold text-gray-900">Lower Deck</h3>
+                    </div>
+                    <div class="seat-grid-container">
+                        <!-- Steering icon -->
+                        <div class="steering-row">
+                            <div class="steering-icon">
+                                <mat-icon class="text-gray-400 !text-2xl">trip_origin</mat-icon>
+                            </div>
+                        </div>
+                        <!-- Seat rows -->
+                        @for (row of lowerDeckSeats; track $index; let rowIdx = $index) {
+                        <div class="seat-row" [class.seat-row-gap]="rowIdx === 1">
+                            @for (seat of row; track seat.id) {
+                            <button class="seat" [class.seat-available]="seat.status === 'available'"
+                                [class.seat-selected]="seat.status === 'selected'"
+                                [class.seat-booked]="seat.status === 'booked'" [disabled]="seat.status === 'booked'"
+                                (click)="toggleSeat(seat)">
+                                <span class="seat-label">{{seat.label}}</span>
+                            </button>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Upper Deck -->
+                <div class="glass-card p-4 sm:p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <mat-icon class="text-green-600">airline_seat_flat_angled</mat-icon>
+                        <h3 class="text-lg font-semibold text-gray-900">Upper Deck</h3>
+                    </div>
+                    <div class="seat-grid-container">
+                        @for (row of upperDeckSeats; track $index; let rowIdx = $index) {
+                        <div class="seat-row" [class.seat-row-gap]="rowIdx === 1">
+                            @for (seat of row; track seat.id) {
+                            <button class="seat" [class.seat-available]="seat.status === 'available'"
+                                [class.seat-selected]="seat.status === 'selected'"
+                                [class.seat-booked]="seat.status === 'booked'" [disabled]="seat.status === 'booked'"
+                                (click)="toggleSeat(seat)">
+                                <span class="seat-label">{{seat.label}}</span>
+                            </button>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>

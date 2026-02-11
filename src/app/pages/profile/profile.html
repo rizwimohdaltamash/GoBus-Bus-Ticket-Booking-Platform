@@ -1,0 +1,111 @@
+<div class="min-h-screen bg-mesh pt-20 animate-fade-in">
+    <div class="fixed top-40 left-10 w-80 h-80 bg-green-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <!-- Header -->
+        <div class="text-center mb-8 sm:mb-10">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">My Profile</h2>
+            <p class="text-gray-500">Manage your GoBus account</p>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="glass-card glow-green p-6 sm:p-8 md:p-10">
+            <!-- Avatar Section -->
+            <div class="flex flex-col items-center mb-10">
+                <div
+                    class="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/20 mb-4">
+                    <mat-icon class="!text-5xl text-white">person</mat-icon>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900">{{ user?.name || 'User' }}</h3>
+                <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide"
+                    [class]="isAdmin ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'">
+                    {{ isAdmin ? 'Bus Admin' : 'Passenger' }}
+                </span>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="space-y-4">
+                <div class="bg-gray-50 rounded-xl p-4 sm:p-5 flex items-center justify-between border border-gray-100">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                            <mat-icon class="text-green-600">badge</mat-icon>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs uppercase tracking-wider">Full Name</p>
+                            <p class="text-gray-900 font-medium mt-0.5">{{ user?.name || 'Not set' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4 sm:p-5 flex items-center justify-between border border-gray-100">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                            <mat-icon class="text-green-600">email</mat-icon>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs uppercase tracking-wider">Email Address</p>
+                            <p class="text-gray-900 font-medium mt-0.5">{{ user?.email || 'Not set' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role-based stat -->
+                <div class="bg-gray-50 rounded-xl p-4 sm:p-5 flex items-center justify-between border border-gray-100">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                            @if (isAdmin) {
+                                <mat-icon class="text-green-600">directions_bus</mat-icon>
+                            } @else {
+                                <mat-icon class="text-green-600">confirmation_number</mat-icon>
+                            }
+                        </div>
+                        <div>
+                            @if (isAdmin) {
+                                <p class="text-gray-400 text-xs uppercase tracking-wider">Total Buses Registered</p>
+                                <p class="text-gray-900 font-medium mt-0.5">
+                                    {{ loading ? '...' : statCount + (statCount === 1 ? ' bus' : ' buses') }}
+                                </p>
+                            } @else {
+                                <p class="text-gray-400 text-xs uppercase tracking-wider">Total Bookings</p>
+                                <p class="text-gray-900 font-medium mt-0.5">
+                                    {{ loading ? '...' : statCount + (statCount === 1 ? ' trip' : ' trips') }}
+                                </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4 sm:p-5 flex items-center justify-between border border-gray-100">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                            <mat-icon class="text-green-600">calendar_month</mat-icon>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs uppercase tracking-wider">Member Since</p>
+                            <p class="text-gray-900 font-medium mt-0.5">{{ loading ? '...' : memberSince }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                @if (isAdmin) {
+                    <a routerLink="/my-buses"
+                        class="btn-secondary flex-1 text-center flex items-center justify-center gap-2">
+                        <mat-icon>directions_bus</mat-icon> My Buses
+                    </a>
+                } @else {
+                    <a routerLink="/home"
+                        class="btn-secondary flex-1 text-center flex items-center justify-center gap-2">
+                        <mat-icon>home</mat-icon> Back to Home
+                    </a>
+                }
+                <button (click)="logout()"
+                    class="flex-1 bg-red-50 border border-red-200 text-red-600 font-medium px-6 py-3 rounded-xl hover:bg-red-100 transition-all duration-300 flex items-center justify-center gap-2">
+                    <mat-icon>logout</mat-icon> Sign Out
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

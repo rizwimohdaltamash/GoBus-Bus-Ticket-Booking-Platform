@@ -1,0 +1,252 @@
+<div class="min-h-screen bg-mesh pt-20 animate-fade-in">
+    <div class="fixed top-40 right-10 w-80 h-80 bg-green-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <!-- Header -->
+        <div class="text-center mb-8 sm:mb-10">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Search Buses</h2>
+            <p class="text-gray-500">Find the perfect bus for your trip</p>
+        </div>
+
+        <!-- Search Form -->
+        <div class="glass-card glow-green p-6 sm:p-8 md:p-10">
+            <div class="grid sm:grid-cols-2 gap-4 sm:gap-6">
+                <!-- From City -->
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-600 mb-2">From</label>
+                    <div class="relative">
+                        <mat-icon
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 !text-xl z-10">my_location</mat-icon>
+                        <input [(ngModel)]="fromCity" (input)="onFromInput()" (focus)="onFromFocus()"
+                            (blur)="hideFromDropdown()" placeholder="Departure City"
+                            class="input-field !pl-11" autocomplete="off">
+                    </div>
+                    <!-- From Suggestions -->
+                    @if (showFromDropdown && fromSuggestions.length > 0) {
+                    <div
+                        class="absolute z-30 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-52 overflow-y-auto">
+                        @for (city of fromSuggestions; track city) {
+                        <button (mousedown)="selectFrom(city)"
+                            class="w-full text-left px-4 py-2.5 hover:bg-green-50 text-gray-700 text-sm flex items-center gap-2 transition-colors cursor-pointer">
+                            <mat-icon class="text-green-500 !text-base">place</mat-icon>
+                            {{ city }}
+                        </button>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <!-- To City -->
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-600 mb-2">To</label>
+                    <div class="relative">
+                        <mat-icon
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 !text-xl z-10">location_on</mat-icon>
+                        <input [(ngModel)]="toCity" (input)="onToInput()" (focus)="onToFocus()"
+                            (blur)="hideToDropdown()" placeholder="Arrival City"
+                            class="input-field !pl-11" autocomplete="off">
+                    </div>
+                    <!-- To Suggestions -->
+                    @if (showToDropdown && toSuggestions.length > 0) {
+                    <div
+                        class="absolute z-30 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-52 overflow-y-auto">
+                        @for (city of toSuggestions; track city) {
+                        <button (mousedown)="selectTo(city)"
+                            class="w-full text-left px-4 py-2.5 hover:bg-green-50 text-gray-700 text-sm flex items-center gap-2 transition-colors cursor-pointer">
+                            <mat-icon class="text-green-500 !text-base">place</mat-icon>
+                            {{ city }}
+                        </button>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
+                <button (click)="searchBuses()"
+                    class="btn-primary flex-1 py-4 text-base flex items-center justify-center gap-2">
+                    <mat-icon>search</mat-icon>
+                    Search Available Buses
+                </button>
+                @if (searched) {
+                <button (click)="clearSearch()"
+                    class="px-6 py-4 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                    <mat-icon>clear</mat-icon> Clear
+                </button>
+                }
+            </div>
+        </div>
+
+        <!-- Loading -->
+        @if (loading) {
+        <div class="flex items-center justify-center py-16">
+            <svg class="animate-spin h-8 w-8 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+        </div>
+        }
+
+        <!-- Search Results -->
+        @if (searched && !loading) {
+        <div class="mt-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <mat-icon class="text-green-600">list</mat-icon>
+                {{ searchResults.length }} bus{{ searchResults.length !== 1 ? 'es' : '' }} found
+                @if (fromCity.trim() || toCity.trim()) {
+                <span class="text-gray-400 font-normal text-sm">
+                    @if (fromCity.trim() && toCity.trim()) {
+                    for {{ fromCity }} → {{ toCity }}
+                    } @else if (fromCity.trim()) {
+                    from {{ fromCity }}
+                    } @else {
+                    to {{ toCity }}
+                    }
+                </span>
+                }
+            </h3>
+
+            @if (searchResults.length === 0) {
+            <!-- No Results -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-10 text-center">
+                <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <mat-icon class="!text-4xl text-red-400">wrong_location</mat-icon>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-700">No buses on this route</h3>
+                <p class="text-gray-400 mt-2 mb-6">
+                    We couldn't find any buses
+                    @if (fromCity.trim() && toCity.trim()) {
+                    from <strong>{{ fromCity }}</strong> to <strong>{{ toCity }}</strong>.
+                    } @else if (fromCity.trim()) {
+                    from <strong>{{ fromCity }}</strong>.
+                    } @else if (toCity.trim()) {
+                    to <strong>{{ toCity }}</strong>.
+                    }
+                    Try a different route or check back later.
+                </p>
+                <button (click)="clearSearch()"
+                    class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-medium transition-all cursor-pointer">
+                    <mat-icon>refresh</mat-icon> Search Again
+                </button>
+            </div>
+            } @else {
+            <!-- Bus Result Cards -->
+            <div class="grid gap-4">
+                @for (bus of searchResults; track bus.id) {
+                <div
+                    class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md hover:border-green-200 transition-all cursor-pointer group"
+                    (click)="selectBus(bus)">
+                    <div class="p-5">
+                        <!-- Bus Name + Type -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                            <div class="flex items-center gap-2">
+                                <mat-icon class="text-green-600">directions_bus</mat-icon>
+                                <h4 class="font-bold text-gray-900 group-hover:text-green-600 transition-colors">
+                                    {{ bus.busName }}</h4>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="px-2.5 py-0.5 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-100">
+                                    {{ bus.busType || 'Standard' }}
+                                </span>
+                                <span
+                                    class="px-2.5 py-0.5 bg-gray-50 text-gray-600 rounded-full text-xs font-medium border border-gray-100">
+                                    {{ bus.vehicleType || 'Bus' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Journey -->
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="text-center">
+                                <p class="text-xl font-bold text-gray-900">{{ bus.departureTime || '—' }}</p>
+                                <p class="text-gray-500 text-sm mt-1">{{ bus.fromCity }}</p>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center px-3">
+                                <p class="text-gray-400 text-xs mb-1">{{ bus.duration || '—' }}</p>
+                                <div class="w-full h-px bg-gray-200 relative">
+                                    <div
+                                        class="absolute left-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white shadow">
+                                    </div>
+                                    <div
+                                        class="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white shadow">
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 text-xs mt-1">{{ bus.stops || 'Non-Stop' }}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xl font-bold text-gray-900">{{ bus.arrivalTime || '—' }}</p>
+                                <p class="text-gray-500 text-sm mt-1">{{ bus.toCity }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Row -->
+                        <div
+                            class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <mat-icon class="!text-base">event_seat</mat-icon>
+                                    {{ bus.totalSeats || '—' }} seats
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <mat-icon class="!text-base">person</mat-icon>
+                                    {{ bus.adminName || 'Operator' }}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl font-bold text-green-600">₹{{ bus.price }}</span>
+                                <span
+                                    class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium group-hover:bg-green-700 transition-colors flex items-center gap-1">
+                                    Book Now <mat-icon class="!text-base">arrow_forward</mat-icon>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Popular Routes (shown when no search) -->
+        @if (!searched && !loading) {
+        <div class="mt-10 sm:mt-12">
+            <h3 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                <mat-icon class="text-green-600">route</mat-icon> Available Routes
+            </h3>
+            @if (allBuses.length > 0) {
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                @for (bus of allBuses.slice(0, 6); track bus.id) {
+                <div (click)="selectBus(bus)"
+                    class="glass-card p-5 hover:border-green-300 transition-all duration-300 cursor-pointer group">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <p
+                                class="text-gray-800 font-semibold group-hover:text-green-600 transition-colors">
+                                {{ bus.fromCity }} → {{ bus.toCity }}</p>
+                            <p class="text-gray-400 text-sm mt-1">{{ bus.busName }}</p>
+                        </div>
+                        <mat-icon
+                            class="text-gray-300 group-hover:text-green-600 transition-colors">arrow_forward</mat-icon>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">{{ bus.departureTime }} - {{ bus.arrivalTime }}</span>
+                        <span class="text-green-600 font-bold">₹{{ bus.price }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="bg-white rounded-2xl border border-gray-200 p-8 text-center">
+                <mat-icon class="text-gray-300 !text-[48px] !w-12 !h-12">directions_bus</mat-icon>
+                <p class="text-gray-500 mt-3">No buses registered yet. Check back later!</p>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
